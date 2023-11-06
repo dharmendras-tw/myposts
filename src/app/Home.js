@@ -1,11 +1,13 @@
+import React from "react";
+import { AddPostForm } from "../features/posts/AddPostForm.js";
+import { PostsList } from "../features/posts/PostsList.js";
 
 function Home() {
   return (
-    <div>
-      <section>
-        <h2>Welcome to the Redux Essentials example app!</h2>
-     </section>
-    </div>
+    <React.Fragment>
+        <AddPostForm />
+        <PostsList />
+    </React.Fragment>
   );
 }   
 
