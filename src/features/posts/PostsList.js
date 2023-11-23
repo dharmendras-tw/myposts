@@ -5,9 +5,10 @@ import { PostAuthor } from "./PostAuthor";
 import { TimeAgo } from "./TimeAgo";
 import { ReactionButtons } from "./ReactionButtons";
 import { fetchPosts, selectAllPosts } from "./postsSlice";
-import  Spinner from "react-spinner";
+import  {BeatLoader} from "react-spinners";
+import "../../index.css";
 
-const PostExcerpt = ({ post }) => {
+let PostExcerpt = ({ post }) => {
   return (
     <article className="post-excerpt">
       <h3>{post.title}</h3>
@@ -25,6 +26,8 @@ const PostExcerpt = ({ post }) => {
   );
 };
 
+PostExcerpt = React.memo(PostExcerpt);
+
 export const PostsList = () => {
   const dispatch = useDispatch();
   const posts = useSelector(selectAllPosts);
@@ -40,7 +43,7 @@ export const PostsList = () => {
  let content;
 
  if (postStatus === "loading") {
-   content = <Spinner text="Loading..." />;
+   content = <BeatLoader text="Loading..." />;
  } else if (postStatus === "succeeded") {
    // Sort posts in reverse chronological order by datetime string
    const orderedPosts = posts

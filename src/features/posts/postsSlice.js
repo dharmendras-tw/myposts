@@ -1,10 +1,14 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import {
+  createSlice,
+  createAsyncThunk,
+  createSelector,
+} from "@reduxjs/toolkit";
 
 const initialState = {
   posts: [],
   status: "idle",
-  error: null
-}
+  error: null,
+};
 
 export const fetchPosts = createAsyncThunk("posts/fetchPosts", async () => {
   const response = await fetch("http://localhost:8080/api/posts");
@@ -19,9 +23,9 @@ export const addNewPost = createAsyncThunk(
     const response = await fetch("http://localhost:8080/api/posts", {
       method: "POST", // or 'POST'
       headers: {
-        'Content-Type': 'application/json'
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify(initialPost) // body data type must match "Content-Type" header
+      body: JSON.stringify(initialPost), // body data type must match "Content-Type" header
     });
     // The response includes the complete post object, including unique ID
     return response.json();
@@ -58,15 +62,14 @@ const postsSlice = createSlice({
         // Add any fetched posts to the array
         //state.posts = state.posts.concat(action.payload);
         state.posts = action.payload;
-
       })
       .addCase(fetchPosts.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.error.message;
       })
       .addCase(addNewPost.fulfilled, (state, action) => {
-          // We can directly add the new post object to our posts array
-          state.posts.push(action.payload);
+        // We can directly add the new post object to our posts array
+        state.posts.push(action.payload);
       });
   },
 });
@@ -77,5 +80,10 @@ export default postsSlice.reducer;
 
 export const selectAllPosts = (state) => state.posts.posts;
 
-export const selectPostById = (state, postId) => 
+export const selectPostById = (state, postId) =>
   state.posts.posts.find((post) => post.id === postId);
+
+export const selectPostsByUser = createSelector(
+  [selectAllPosts, (state, userId) => userId],
+  (posts, userId) => posts.filter((post) => post.userId === userId)
+);
